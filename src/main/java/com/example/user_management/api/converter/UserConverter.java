@@ -1,5 +1,6 @@
 package com.example.user_management.api.converter;
 
+import com.example.user_management.api.model.response.GetUserResponseModel;
 import com.example.user_management.entity.User;
 import com.example.user_management.api.model.request.CreateUserRequestModel;
 import lombok.AccessLevel;

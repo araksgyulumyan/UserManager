@@ -1,5 +1,6 @@
 package com.example.user_management.service.impl;
 
+import com.example.user_management.api.exception.UserNotFoundException;
 import com.example.user_management.entity.User;
 import com.example.user_management.repository.UserRepository;
 import com.example.user_management.service.UserService;
@@ -14,6 +15,7 @@ import static org.springframework.util.Assert.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -22,21 +24,20 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User createUser(final User user) {
-        assertUserNotNull(user);
+        assertUserNotNullAndPropertiesNotEmpty(user);
         return userRepository.save(user);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Optional<User> getUserById(final Long id) {
+    public User getUserById(final Long id) {
         assertUserIdNotNull(id);
-        return userRepository.findById(id);
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
     }
 
     @Override
-    public Optional<User> findByUsername(final String username) {
-        asserUsernameNotNull(username);
-        return userRepository.findByUsername(username);
+    public User findByUsername(final String username) {
+        asserUsernameNotEmpty(username);
+        return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
     }
 
     @Override
@@ -44,21 +45,21 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
-    private void assertUserNotNull(final User user) {
+    private void assertUserNotNullAndPropertiesNotEmpty(final User user) {
          notNull(user, "User should not be null");
-         asserUsernameNotNull(user.getUsername());
-         assertPasswordNotNull(user.getPassword());
+        asserUsernameNotEmpty(user.getUsername());
+        assertPasswordNotEmpty(user.getPassword());
     }
 
     private void assertUserIdNotNull(final Long id) {
         notNull(id, "User id should not be null");
     }
 
-    private void asserUsernameNotNull(final String username) {
+    private void asserUsernameNotEmpty(final String username) {
         hasLength(username, "Username should not be empty");
     }
 
-    private void assertPasswordNotNull(final String password) {
+    private void assertPasswordNotEmpty(final String password) {
         hasLength(password, "User password should not be empty");
     }
 }

@@ -1,6 +1,8 @@
 package com.example.user_management.api.controller;
 
 import com.example.user_management.api.converter.UserConverter;
+import com.example.user_management.api.model.UserResponseModel;
+import com.example.user_management.api.model.response.GetUserResponseModel;
 import com.example.user_management.entity.User;
 import com.example.user_management.api.model.request.CreateUserRequestModel;
 import com.example.user_management.api.model.response.CreateUserResponseModel;
@@ -11,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -27,19 +28,15 @@ public class UserController {
         return new ResponseEntity<>(new CreateUserResponseModel(user.getId(), user.getUsername()), HttpStatus.CREATED);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody User user) {
-        Optional<User> optionalUser = userService.findByUsername(user.getUsername());
-        if (optionalUser.isPresent() && user.getPassword().equals(optionalUser.get().getPassword())) {
-            return new ResponseEntity<>("Login successful", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
-        }
-    }
+    @GetMapping("/{userId}")
+    public ResponseEntity<GetUserResponseModel> getUserById(@PathVariable Long userId) {
+        User user = userService.getUserById(userId);
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable Long userId) {
-        return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
+        UserResponseModel userResponseModel = new UserResponseModel();
+        userResponseModel.setUserId(user.getId());
+        userResponseModel.setUsername(user.getUsername());
+
+        return new ResponseEntity<>(new GetUserResponseModel(userResponseModel), HttpStatus.OK);
     }
 
     @GetMapping("/")
