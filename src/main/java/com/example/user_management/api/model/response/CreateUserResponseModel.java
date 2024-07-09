@@ -1,4 +1,4 @@
-package com.example.user_management.model.response;
+package com.example.user_management.api.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,4 @@ public class CreateUserResponseModel {
 
     @JsonProperty("username")
     private String username;
-
-    @JsonProperty("password")
-    private String password;
 }

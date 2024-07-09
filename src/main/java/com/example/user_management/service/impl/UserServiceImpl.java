@@ -3,10 +3,9 @@ package com.example.user_management.service.impl;
 import com.example.user_management.entity.User;
 import com.example.user_management.repository.UserRepository;
 import com.example.user_management.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,23 +27,38 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> getUserById(final Long id) {
-        return Optional.empty();
+        assertUserIdNotNull(id);
+        return userRepository.findById(id);
     }
 
     @Override
     public Optional<User> findByUsername(final String username) {
-        return Optional.empty();
+        asserUsernameNotNull(username);
+        return userRepository.findByUsername(username);
     }
 
     @Override
     public List<User> getAllUsers() {
-        return List.of();
+        return userRepository.findAll();
     }
 
     private void assertUserNotNull(final User user) {
          notNull(user, "User should not be null");
-         hasLength(user.getUsername(), "User username should not be empty");
-         hasLength(user.getPassword(), "User password should not be empty");
+         asserUsernameNotNull(user.getUsername());
+         assertPasswordNotNull(user.getPassword());
+    }
+
+    private void assertUserIdNotNull(final Long id) {
+        notNull(id, "User id should not be null");
+    }
+
+    private void asserUsernameNotNull(final String username) {
+        hasLength(username, "Username should not be empty");
+    }
+
+    private void assertPasswordNotNull(final String password) {
+        hasLength(password, "User password should not be empty");
     }
 }
