@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CreateUserRequestModel {
+public class RegisterUserRequestModel {
 
     @JsonProperty(value = "username", required = true)
     @NotEmpty

@@ -4,14 +4,13 @@ import com.example.user_management.api.exception.UserNotFoundException;
 import com.example.user_management.entity.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
 
     /**
      * Creates new user
      *
-     * @param user
+     * @param user to be created
      * @return newly created user
      */
     User createUser(final User user);
@@ -19,7 +18,7 @@ public interface UserService {
     /**
      * Get user for provided id
      *
-     * @param id
+     * @param id of the User
      * @throws UserNotFoundException if user not exists
      * @return User
      */
@@ -28,8 +27,8 @@ public interface UserService {
     /**
      * Find user by username
      *
-     * @param username
-     * @throws UserNotFoundException
+     * @param username of the User
+     * @throws UserNotFoundException if user is not found
      * @return User
      */
     User findByUsername(final String username);
