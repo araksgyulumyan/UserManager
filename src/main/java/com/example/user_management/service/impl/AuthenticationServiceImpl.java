@@ -1,16 +1,16 @@
 package com.example.user_management.service.impl;
 
-import com.example.user_management.api.exception.UserNotFoundException;
-import com.example.user_management.converter.UserDtoConverter;
-import com.example.user_management.dto.LoginUserDto;
-import com.example.user_management.dto.RegisterUserDto;
+import com.example.user_management.dto.AuthenticateUserDto;
+import com.example.user_management.dto.AuthorizeUserDto;
 import com.example.user_management.entity.User;
-import com.example.user_management.repository.UserRepository;
 import com.example.user_management.service.AuthenticationService;
-import com.example.user_management.service.Helper;
+import com.example.user_management.service.UserAssertionHelper;
+import com.example.user_management.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,28 +18,31 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final AuthenticationManager authenticationManager;
-    private final UserDtoConverter userDtoConverter;
-    private final Helper helper;
+    private final UserAssertionHelper userAssertionHelper;
+    private final CustomUserDetailsServiceImpl customUserDetailsServiceImpl;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
-    public User register(final RegisterUserDto registerUserDto) {
-        helper.assertRegisterUserDtoNotNullAndPropertiesNotEmpty(registerUserDto);
-        return userRepository.save(userDtoConverter.toUser(registerUserDto));
+    public User authorize(final AuthorizeUserDto authorizeUserDto) {
+        userAssertionHelper.assertRegisterUserDtoNotNullAndPropertiesNotEmpty(authorizeUserDto);
+        User user = new User();
+        user.setUsername(authorizeUserDto.getUsername());
+        user.setPassword(passwordEncoder.encode(authorizeUserDto.getPassword()));
+        return userService.createUser(user);
     }
 
     @Override
-    public User login(final LoginUserDto loginUserDto) {
+    @Transactional(readOnly = true)
+    public UserDetails authenticate(final AuthenticateUserDto authenticateUserDto) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginUserDto.getUsername(),
-                        loginUserDto.getPassword()
+                        authenticateUserDto.getUsername(),
+                        authenticateUserDto.getPassword()
                 )
         );
-
-        return userRepository.findByUsername(loginUserDto.getUsername())
-                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + loginUserDto.getUsername()));
+        return customUserDetailsServiceImpl.loadUserByUsername(authenticateUserDto.getUsername());
     }
 }

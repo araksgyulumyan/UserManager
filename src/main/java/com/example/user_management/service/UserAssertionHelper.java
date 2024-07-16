@@ -1,6 +1,6 @@
 package com.example.user_management.service;
 
-import com.example.user_management.dto.RegisterUserDto;
+import com.example.user_management.dto.AuthorizeUserDto;
 import com.example.user_management.entity.User;
 import org.springframework.stereotype.Component;
 
@@ -8,7 +8,7 @@ import static org.springframework.util.Assert.hasLength;
 import static org.springframework.util.Assert.notNull;
 
 @Component
-public class Helper {
+public class UserAssertionHelper {
 
     public void assertUserNotNullAndPropertiesNotEmpty(final User user) {
         notNull(user, "User should not be null");
@@ -16,10 +16,10 @@ public class Helper {
         assertPasswordNotEmpty(user.getPassword());
     }
 
-    public void assertRegisterUserDtoNotNullAndPropertiesNotEmpty(final RegisterUserDto registerUserDto) {
-        notNull(registerUserDto, "User should not be null");
-        asserUsernameNotEmpty(registerUserDto.getUsername());
-        assertPasswordNotEmpty(registerUserDto.getPassword());
+    public void assertRegisterUserDtoNotNullAndPropertiesNotEmpty(final AuthorizeUserDto authorizeUserDto) {
+        notNull(authorizeUserDto, "User should not be null");
+        asserUsernameNotEmpty(authorizeUserDto.getUsername());
+        assertPasswordNotEmpty(authorizeUserDto.getPassword());
     }
 
     public void asserUsernameNotEmpty(final String username) {

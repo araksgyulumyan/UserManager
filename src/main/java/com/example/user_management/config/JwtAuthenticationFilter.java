@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,21 +20,16 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import java.io.IOException;
 
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final HandlerExceptionResolver handlerExceptionResolver;
 
+    private final HandlerExceptionResolver handlerExceptionResolver;
     private final JwtServiceImpl jwtService;
     private final UserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter(
-            JwtServiceImpl jwtService,
-            UserDetailsService userDetailsService,
-            HandlerExceptionResolver handlerExceptionResolver
-    ) {
-        this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
-        this.handlerExceptionResolver = handlerExceptionResolver;
-    }
+    private final static String HEADER_STRING = "Authorization";
+    private final static String TOKEN_PREFIX = "Bearer ";
+    private final static Integer TOKEN_BEGIN_INDEX = 7;
 
     @Override
     protected void doFilterInternal(
@@ -41,15 +37,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
+        final String authHeader = request.getHeader(HEADER_STRING);
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
-            final String jwt = authHeader.substring(7);
+            final String jwt = extractJwtTokenSubstringFromRequestHeader(authHeader);
             final String username = jwtService.extractUsername(jwt);
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -73,5 +69,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception exception) {
             handlerExceptionResolver.resolveException(request, response, null, exception);
         }
+    }
+
+    private String extractJwtTokenSubstringFromRequestHeader(final String headerString) {
+        return headerString.substring(TOKEN_BEGIN_INDEX);
     }
 }

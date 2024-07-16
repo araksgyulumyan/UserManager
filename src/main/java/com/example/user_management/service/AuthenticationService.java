@@ -1,24 +1,25 @@
 package com.example.user_management.service;
 
-import com.example.user_management.dto.LoginUserDto;
-import com.example.user_management.dto.RegisterUserDto;
+import com.example.user_management.dto.AuthenticateUserDto;
+import com.example.user_management.dto.AuthorizeUserDto;
 import com.example.user_management.entity.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public interface AuthenticationService {
 
     /**
-     * Register user
+     * Authorize user
      *
-     * @param registerUserDto model for registration
+     * @param authorizeUserDto model for registration
      * @return newly registered user
      */
-    User register(final RegisterUserDto registerUserDto);
+    User authorize(final AuthorizeUserDto authorizeUserDto);
 
     /**
-     * Login user with credentials
+     * Authenticate user with credentials
      *
-     * @param loginUserDto model for login
+     * @param authenticateUserDto model for login
      * @return logged in User
      */
-    User login(final LoginUserDto loginUserDto);
+    UserDetails authenticate(final AuthenticateUserDto authenticateUserDto);
 }

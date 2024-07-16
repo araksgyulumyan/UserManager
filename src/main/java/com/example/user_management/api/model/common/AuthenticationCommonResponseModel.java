@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AuthenticationResponseModel {
+public class AuthenticationCommonResponseModel {
 
     private String token;
 

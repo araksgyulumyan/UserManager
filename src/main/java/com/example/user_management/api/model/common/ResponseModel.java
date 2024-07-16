@@ -11,7 +11,7 @@ public abstract class ResponseModel<T> {
 
     protected T body;
 
-    protected  List<ErrorCustomModel> errors = new ArrayList<>();
+    protected  List<ErrorModel> errors = new ArrayList<>();
 
     public boolean hasErrors() {
         return !CollectionUtils.isEmpty(errors);
