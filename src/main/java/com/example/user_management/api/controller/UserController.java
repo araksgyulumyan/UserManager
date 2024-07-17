@@ -3,7 +3,7 @@ package com.example.user_management.api.controller;
 import com.example.user_management.api.model.common.UserResponseModel;
 import com.example.user_management.api.model.response.GetUserResponseModel;
 import com.example.user_management.entity.User;
-import com.example.user_management.service.impl.UserServiceImpl;
+import com.example.user_management.service.user.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

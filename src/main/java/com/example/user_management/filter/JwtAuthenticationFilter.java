@@ -1,6 +1,6 @@
-package com.example.user_management.config;
+package com.example.user_management.filter;
 
-import com.example.user_management.service.impl.JwtServiceImpl;
+import com.example.user_management.service.security.impl.JwtServiceImpl;
 import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

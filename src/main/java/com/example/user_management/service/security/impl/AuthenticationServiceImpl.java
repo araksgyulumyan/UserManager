@@ -1,11 +1,11 @@
-package com.example.user_management.service.impl;
+package com.example.user_management.service.security.impl;
 
-import com.example.user_management.dto.AuthenticateUserDto;
-import com.example.user_management.dto.AuthorizeUserDto;
+import com.example.user_management.service.model.AuthenticateUserModel;
+import com.example.user_management.service.model.AuthorizeUserModel;
 import com.example.user_management.entity.User;
-import com.example.user_management.service.AuthenticationService;
+import com.example.user_management.service.security.AuthenticationService;
 import com.example.user_management.service.UserAssertionHelper;
-import com.example.user_management.service.UserService;
+import com.example.user_management.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,28 +21,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final UserAssertionHelper userAssertionHelper;
-    private final CustomUserDetailsServiceImpl customUserDetailsServiceImpl;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
-    public User authorize(final AuthorizeUserDto authorizeUserDto) {
-        userAssertionHelper.assertRegisterUserDtoNotNullAndPropertiesNotEmpty(authorizeUserDto);
+    public User authorize(final AuthorizeUserModel authorizeUserModel) {
+        userAssertionHelper.assertRegisterUserDtoNotNullAndPropertiesNotEmpty(authorizeUserModel);
         User user = new User();
-        user.setUsername(authorizeUserDto.getUsername());
-        user.setPassword(passwordEncoder.encode(authorizeUserDto.getPassword()));
+        user.setUsername(authorizeUserModel.getUsername());
+        user.setPassword(passwordEncoder.encode(authorizeUserModel.getPassword()));
         return userService.createUser(user);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails authenticate(final AuthenticateUserDto authenticateUserDto) {
+    public UserDetails authenticate(final AuthenticateUserModel authenticateUserModel) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        authenticateUserDto.getUsername(),
-                        authenticateUserDto.getPassword()
+                        authenticateUserModel.getUsername(),
+                        authenticateUserModel.getPassword()
                 )
         );
-        return customUserDetailsServiceImpl.loadUserByUsername(authenticateUserDto.getUsername());
+        return userDetailsServiceImpl.loadUserByUsername(authenticateUserModel.getUsername());
     }
 }

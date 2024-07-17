@@ -1,7 +1,7 @@
-package com.example.user_management.service.impl;
+package com.example.user_management.service.security.impl;
 
-import com.example.user_management.config.CustomUserDetails;
-import com.example.user_management.service.UserService;
+import com.example.user_management.service.security.CustomUserDetails;
+import com.example.user_management.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CustomUserDetailsServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserService userService;
 

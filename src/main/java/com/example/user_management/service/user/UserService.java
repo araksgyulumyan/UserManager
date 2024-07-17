@@ -1,4 +1,4 @@
-package com.example.user_management.service;
+package com.example.user_management.service.user;
 
 import com.example.user_management.api.exception.UserNotFoundException;
 import com.example.user_management.entity.User;

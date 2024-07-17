@@ -1,4 +1,4 @@
-package com.example.user_management.service.impl;
+package com.example.user_management.service.security.impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -62,6 +62,9 @@ public class JwtServiceImpl {
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
+        if(username == null) {
+            return false;
+        }
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 

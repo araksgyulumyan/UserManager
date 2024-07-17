@@ -1,4 +1,4 @@
-package com.example.user_management.config;
+package com.example.user_management.service.security;
 
 import com.example.user_management.entity.User;
 import lombok.RequiredArgsConstructor;

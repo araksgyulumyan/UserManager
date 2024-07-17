@@ -1,6 +1,6 @@
 package com.example.user_management.config;
 
-import com.example.user_management.service.impl.CustomUserDetailsServiceImpl;
+import com.example.user_management.service.security.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final CustomUserDetailsServiceImpl customUserDetailsService;
+    private final UserDetailsServiceImpl customUserDetailsService;
 
     @Bean
     UserDetailsService userDetailsService() {

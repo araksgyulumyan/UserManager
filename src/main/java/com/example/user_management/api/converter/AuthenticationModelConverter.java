@@ -1,8 +1,8 @@
 package com.example.user_management.api.converter;
 
 import com.example.user_management.api.model.request.AuthenticationRequestModel;
-import com.example.user_management.dto.AuthenticateUserDto;
-import com.example.user_management.dto.AuthorizeUserDto;
+import com.example.user_management.service.model.AuthenticateUserModel;
+import com.example.user_management.service.model.AuthorizeUserModel;
 import com.example.user_management.api.model.request.AuthorizationRequestModel;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -12,17 +12,17 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthenticationModelConverter {
 
-    public AuthorizeUserDto toAuthorizeUserDto(final AuthorizationRequestModel authorizationRequestModel) {
-        AuthorizeUserDto authorizeUserDto = new AuthorizeUserDto();
-        authorizeUserDto.setUsername(authorizationRequestModel.getUsername());
-        authorizeUserDto.setPassword(authorizationRequestModel.getPassword());
-        return authorizeUserDto;
+    public AuthorizeUserModel toAuthorizeUserDto(final AuthorizationRequestModel authorizationRequestModel) {
+        AuthorizeUserModel authorizeUserModel = new AuthorizeUserModel();
+        authorizeUserModel.setUsername(authorizationRequestModel.getUsername());
+        authorizeUserModel.setPassword(authorizationRequestModel.getPassword());
+        return authorizeUserModel;
     }
 
-    public AuthenticateUserDto toAuthenticateUserDto(final AuthenticationRequestModel authenticationRequestModel) {
-        AuthenticateUserDto authenticateUserDto = new AuthenticateUserDto();
-        authenticateUserDto.setUsername(authenticationRequestModel.getUsername());
-        authenticateUserDto.setPassword(authenticationRequestModel.getPassword());
-        return authenticateUserDto;
+    public AuthenticateUserModel toAuthenticateUserDto(final AuthenticationRequestModel authenticationRequestModel) {
+        AuthenticateUserModel authenticateUserModel = new AuthenticateUserModel();
+        authenticateUserModel.setUsername(authenticationRequestModel.getUsername());
+        authenticateUserModel.setPassword(authenticationRequestModel.getPassword());
+        return authenticateUserModel;
     }
 }

@@ -1,6 +1,6 @@
 package com.example.user_management.service;
 
-import com.example.user_management.dto.AuthorizeUserDto;
+import com.example.user_management.service.model.AuthorizeUserModel;
 import com.example.user_management.entity.User;
 import org.springframework.stereotype.Component;
 
@@ -16,10 +16,10 @@ public class UserAssertionHelper {
         assertPasswordNotEmpty(user.getPassword());
     }
 
-    public void assertRegisterUserDtoNotNullAndPropertiesNotEmpty(final AuthorizeUserDto authorizeUserDto) {
-        notNull(authorizeUserDto, "User should not be null");
-        asserUsernameNotEmpty(authorizeUserDto.getUsername());
-        assertPasswordNotEmpty(authorizeUserDto.getPassword());
+    public void assertRegisterUserDtoNotNullAndPropertiesNotEmpty(final AuthorizeUserModel authorizeUserModel) {
+        notNull(authorizeUserModel, "User should not be null");
+        asserUsernameNotEmpty(authorizeUserModel.getUsername());
+        assertPasswordNotEmpty(authorizeUserModel.getPassword());
     }
 
     public void asserUsernameNotEmpty(final String username) {

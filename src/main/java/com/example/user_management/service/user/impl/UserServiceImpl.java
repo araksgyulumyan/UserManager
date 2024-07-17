@@ -1,10 +1,10 @@
-package com.example.user_management.service.impl;
+package com.example.user_management.service.user.impl;
 
 import com.example.user_management.api.exception.UserNotFoundException;
 import com.example.user_management.entity.User;
 import com.example.user_management.repository.UserRepository;
 import com.example.user_management.service.UserAssertionHelper;
-import com.example.user_management.service.UserService;
+import com.example.user_management.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
