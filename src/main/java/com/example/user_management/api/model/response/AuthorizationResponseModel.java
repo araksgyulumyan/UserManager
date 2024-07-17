@@ -8,13 +8,13 @@ import lombok.Setter;
 
 @Setter
 @AllArgsConstructor
-public class GetUserResponseModel extends ResponseModel<UserResponseModel> {
+public class AuthorizationResponseModel extends ResponseModel<UserResponseModel> {
 
-    public GetUserResponseModel(final UserResponseModel model) {
+    public AuthorizationResponseModel(final UserResponseModel model) {
         setBody(model);
     }
 
-    public GetUserResponseModel(final ErrorModel errorModel) {
+    public AuthorizationResponseModel(final ErrorModel errorModel) {
         getErrors().add(errorModel);
     }
 }

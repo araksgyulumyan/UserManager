@@ -1,12 +1,9 @@
 package com.example.user_management.api.controller;
 
-import com.example.user_management.api.converter.UserConverter;
-import com.example.user_management.api.model.UserResponseModel;
+import com.example.user_management.api.model.common.UserResponseModel;
 import com.example.user_management.api.model.response.GetUserResponseModel;
 import com.example.user_management.entity.User;
-import com.example.user_management.api.model.request.CreateUserRequestModel;
-import com.example.user_management.api.model.response.CreateUserResponseModel;
-import com.example.user_management.service.impl.UserServiceImpl;
+import com.example.user_management.service.user.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +17,6 @@ import java.util.List;
 public class UserController {
 
     private final UserServiceImpl userService;
-    private final UserConverter userConverter;
-
-    @PostMapping("/register")
-    public ResponseEntity<CreateUserResponseModel> registerUser(@RequestBody CreateUserRequestModel createUserRequestModel) {
-        User user = userService.createUser(userConverter.toUser(createUserRequestModel));
-        return new ResponseEntity<>(new CreateUserResponseModel(user.getId(), user.getUsername()), HttpStatus.CREATED);
-    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<GetUserResponseModel> getUserById(@PathVariable Long userId) {
@@ -43,5 +33,4 @@ public class UserController {
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
-
 }

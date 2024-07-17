@@ -1,4 +1,4 @@
-package com.example.user_management.api.model;
+package com.example.user_management.api.model.common;
 
 import lombok.Data;
 import org.springframework.util.CollectionUtils;
@@ -11,7 +11,7 @@ public abstract class ResponseModel<T> {
 
     protected T body;
 
-    protected  List<ErrorCustomModel> errors = new ArrayList<>();
+    protected  List<ErrorModel> errors = new ArrayList<>();
 
     public boolean hasErrors() {
         return !CollectionUtils.isEmpty(errors);
