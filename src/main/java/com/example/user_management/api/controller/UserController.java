@@ -5,11 +5,10 @@ import com.example.user_management.api.model.response.GetUserResponseModel;
 import com.example.user_management.entity.User;
 import com.example.user_management.service.user.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -30,7 +29,8 @@ public class UserController {
     }
 
     @GetMapping("/")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<Page<User>> getAllUsers(@RequestParam int page, @RequestParam int size) {
+        Page<User> users = userService.getAllUsers(page, size);
+        return ResponseEntity.ok(users);
     }
 }
