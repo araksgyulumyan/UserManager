@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalApiExceptionHandler {
 
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(UserNotFoundApiException.class)
     public final ResponseEntity<ResponseModel> handleUserNotFoundException(Exception ex) {
         ErrorModel errorCustomModel = new ErrorModel();
         String errorMessage = "An unexpected error occurred: " + ex.getMessage();
@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new GetUserResponseModel(errorCustomModel), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(UserUnauthorizedException.class)
+    @ExceptionHandler(UserUnauthorizedApiException.class)
     public final ResponseEntity<ResponseModel> handleUserNotUnauthorizedException(Exception ex) {
         ErrorModel errorCustomModel = new ErrorModel();
         String errorMessage = "An unexpected error occurred: " + ex.getMessage();

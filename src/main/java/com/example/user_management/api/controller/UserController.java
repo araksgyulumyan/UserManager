@@ -8,6 +8,7 @@ import com.example.user_management.service.user.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +36,12 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<Page<UserResponseModel>> getAllUsers(@RequestParam(defaultValue = "0") int page,
-                                                               @RequestParam(defaultValue = "10") int size) {
-        Page<User> userPage = userService.getAllUsers(page, size);
+                                                               @RequestParam(defaultValue = "10") int size,
+                                                               @RequestParam(defaultValue = "id") String sortBy,
+                                                               @RequestParam(defaultValue = "desc") String sortDirection) {
+
+        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
+        Page<User> userPage = userService.getAllUsers(page, size, Sort.by(direction, sortBy));
         List<UserResponseModel> userResponseModels = userPage.stream().map(userModelConverter::toUserResponseModel).toList();
         Page<UserResponseModel> userResponseModelPage = new PageImpl<>(userResponseModels);
         return new ResponseEntity<>(userResponseModelPage, HttpStatus.OK);

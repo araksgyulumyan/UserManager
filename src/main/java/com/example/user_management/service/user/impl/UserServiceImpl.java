@@ -1,6 +1,6 @@
 package com.example.user_management.service.user.impl;
 
-import com.example.user_management.api.exception.UserNotFoundException;
+import com.example.user_management.api.exception.UserNotFoundApiException;
 import com.example.user_management.entity.User;
 import com.example.user_management.repository.UserRepository;
 import com.example.user_management.service.UserAssertionHelper;
@@ -31,18 +31,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(final Long id) {
         helper.assertUserIdNotNull(id);
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundApiException("User not found with id: " + id));
     }
 
     @Override
     public User findByUsername(final String username) {
         helper.asserUsernameNotEmpty(username);
-        return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
+        return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundApiException("User not found with username: " + username));
     }
 
     @Override
-    public Page<User> getAllUsers(final Integer page, final Integer size) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+    public Page<User> getAllUsers(final Integer page, final Integer size, final Sort sort) {
         Pageable pageable = PageRequest.of(page, size, sort);
         return userRepository.findAll(pageable);
     }

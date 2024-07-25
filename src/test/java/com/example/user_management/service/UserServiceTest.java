@@ -1,19 +1,19 @@
 package com.example.user_management.service;
 
-import com.example.user_management.api.exception.UserNotFoundException;
+import com.example.user_management.api.exception.UserNotFoundApiException;
 import com.example.user_management.entity.User;
 import com.example.user_management.repository.UserRepository;
 import com.example.user_management.service.user.impl.UserServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,18 +33,56 @@ public class UserServiceTest {
     @InjectMocks
     private UserServiceImpl userService;
 
+    private User user;
+
+    @BeforeEach
+    public void setUp() {
+        user = new User();
+        user.setId(1L);
+        user.setUsername("testuser");
+        user.setPassword("password");
+    }
+
+    @Test
+    public void testCreateUser() {
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        User createdUser = userService.createUser(user);
+
+        assertNotNull(createdUser);
+        assertEquals(user.getUsername(), createdUser.getUsername());
+        verify(userRepository, times(1)).save(user);
+    }
+
     @Test
     public void testGetAllUsers() {
         User user = new User();
-        user.setUsername("testuser");
+        user.setUsername("testUser");
 
-        Page<User> page = new PageImpl<>(Collections.singletonList(user));
-        when(userRepository.findAll(any(Pageable.class))).thenReturn(page);
+        List<User> users = List.of(user);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "id"));
+        Page<User> userPage = new PageImpl<>(users, pageable, users.size());
 
-        Page<User> result = userService.getAllUsers(0, 10);
+        when(userRepository.findAll(eq(pageable))).thenReturn(userPage);
+
+        Page<User> result = userService.getAllUsers(0, 10, Sort.by(Sort.Direction.DESC, "id"));
 
         assertEquals(1, result.getTotalElements());
-        assertEquals("testuser", result.getContent().get(0).getUsername());
+        assertEquals("testUser", result.getContent().get(0).getUsername());
+    }
+
+    @Test
+    public void testGetAllUsers_NoUsersExists() {
+        List<User> users = Collections.emptyList();
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
+        Page<User> userPage = new PageImpl<>(users, pageable, users.size());
+
+        when(userRepository.findAll(eq(pageable))).thenReturn(userPage);
+
+        Page<User> result = userService.getAllUsers(0, 10, Sort.by(Sort.Direction.ASC, "id"));
+
+        assertEquals(0, result.getTotalElements());
+        assertEquals(0, result.getContent().size());
     }
 
     @Test
@@ -60,10 +98,10 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testGetByUsername_UserNotFound() {
+    public void testFindByUsername_UserNotFound() {
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> userService.findByUsername("unknownuser"));
+        assertThrows(UserNotFoundApiException.class, () -> userService.findByUsername("unknownuser"));
         verify(userAssertionHelper, times(1)).asserUsernameNotEmpty("unknownuser");
     }
 
@@ -76,5 +114,13 @@ public class UserServiceTest {
 
         User result = userService.getUserById(1L);
         assertEquals(1, result.getId());
+    }
+
+    @Test
+    public void testGetUserById_UserNotFound() {
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundApiException.class, () -> userService.getUserById(1L));
+        verify(userRepository, times(1)).findById(1L);
     }
 }
