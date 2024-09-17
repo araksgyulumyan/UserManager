@@ -1,9 +1,9 @@
 package com.example.user_management.service.user;
 
-import com.example.user_management.api.exception.UserNotFoundException;
+import com.example.user_management.api.exception.UserNotFoundApiException;
 import com.example.user_management.entity.User;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 
 public interface UserService {
 
@@ -19,8 +19,8 @@ public interface UserService {
      * Get user for provided id
      *
      * @param id of the User
-     * @throws UserNotFoundException if user not exists
      * @return User
+     * @throws UserNotFoundApiException if user not exists
      */
     User getUserById(final Long id);
 
@@ -28,14 +28,15 @@ public interface UserService {
      * Find user by username
      *
      * @param username of the User
-     * @throws UserNotFoundException if user is not found
      * @return User
+     * @throws UserNotFoundApiException if user is not found
      */
     User findByUsername(final String username);
 
     /**
      * Get all users
-     * @return List of all users
+     *
+     * @return All users with pagination
      */
-    List<User> getAllUsers();
+    Page<User> getAllUsers(final Integer page, final Integer size, final Sort sort);
 }
