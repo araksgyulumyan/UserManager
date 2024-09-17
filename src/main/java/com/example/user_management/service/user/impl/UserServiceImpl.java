@@ -1,9 +1,10 @@
 package com.example.user_management.service.user.impl;
 
-import com.example.user_management.api.exception.UserNotFoundApiException;
 import com.example.user_management.entity.User;
 import com.example.user_management.repository.UserRepository;
 import com.example.user_management.service.UserAssertionHelper;
+import com.example.user_management.service.exception.UserNotFoundForIdException;
+import com.example.user_management.service.exception.UserNotFoundForUsernameException;
 import com.example.user_management.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,13 +32,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(final Long id) {
         helper.assertUserIdNotNull(id);
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundApiException("User not found with id: " + id));
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundForIdException(id));
     }
 
     @Override
     public User findByUsername(final String username) {
         helper.asserUsernameNotEmpty(username);
-        return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundApiException("User not found with username: " + username));
+        return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundForUsernameException(username));
     }
 
     @Override

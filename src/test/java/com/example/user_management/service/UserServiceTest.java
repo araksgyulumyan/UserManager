@@ -1,9 +1,11 @@
 package com.example.user_management.service;
 
-import com.example.user_management.api.exception.UserNotFoundApiException;
 import com.example.user_management.entity.User;
 import com.example.user_management.repository.UserRepository;
+import com.example.user_management.service.exception.UserNotFoundForIdException;
+import com.example.user_management.service.exception.UserNotFoundForUsernameException;
 import com.example.user_management.service.user.impl.UserServiceImpl;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +30,7 @@ public class UserServiceTest {
     private UserRepository userRepository;
 
     @Mock
+    //todo missing test case UserAssertionHelper
     private UserAssertionHelper userAssertionHelper;
 
     @InjectMocks
@@ -36,11 +39,17 @@ public class UserServiceTest {
     private User user;
 
     @BeforeEach
-    public void setUp() {
+    public void before() {
         user = new User();
         user.setId(1L);
         user.setUsername("testuser");
         user.setPassword("password");
+        reset(userRepository, userAssertionHelper);
+    }
+
+    @AfterEach
+    public void after() {
+        noMoreInteractions();
     }
 
     @Test
@@ -51,11 +60,12 @@ public class UserServiceTest {
 
         assertNotNull(createdUser);
         assertEquals(user.getUsername(), createdUser.getUsername());
+        verify(userAssertionHelper, times(1)).assertUserNotNullAndPropertiesNotEmpty(user);
         verify(userRepository, times(1)).save(user);
     }
 
     @Test
-    public void testGetAllUsers() {
+    public void testGetAllUsers_whenUsersExists_thenUsersReturned() {
         User user = new User();
         user.setUsername("testUser");
 
@@ -72,7 +82,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testGetAllUsers_NoUsersExists() {
+    public void testGetAllUsers_NoUsersExists_thenEmptyListReturned() {
         List<User> users = Collections.emptyList();
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
         Page<User> userPage = new PageImpl<>(users, pageable, users.size());
@@ -84,43 +94,59 @@ public class UserServiceTest {
         assertEquals(0, result.getTotalElements());
         assertEquals(0, result.getContent().size());
     }
+    //todo missing test cases for getAll
 
     @Test
     public void testFindByUsername() {
-        User user = new User();
-        user.setUsername("testuser");
-        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
 
         User result = userService.findByUsername("testuser");
-        assertEquals("testuser", result.getUsername());
-        verify(userAssertionHelper, times(1)).asserUsernameNotEmpty("testuser");
 
+        assertNotNull(result);
+        assertEquals("testuser", result.getUsername());
+
+        verify(userAssertionHelper, times(1)).asserUsernameNotEmpty("testuser");
+        verify(userRepository, times(1)).findByUsername("testuser");
     }
 
     @Test
     public void testFindByUsername_UserNotFound() {
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundApiException.class, () -> userService.findByUsername("unknownuser"));
-        verify(userAssertionHelper, times(1)).asserUsernameNotEmpty("unknownuser");
+        String expectedUsername = "unknownuser";
+        assertThrows(UserNotFoundForUsernameException.class, () -> userService.findByUsername(expectedUsername));
+
+        verify(userRepository, times(1)).findByUsername(anyString());
+        verify(userAssertionHelper, times(1)).asserUsernameNotEmpty(expectedUsername);
     }
 
     @Test
     public void testGetUserById() {
-        User user = new User();
-        user.setId(1L);
-
+        // expect
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
+        // call
         User result = userService.getUserById(1L);
-        assertEquals(1, result.getId());
+
+        assertNotNull(result);
+        assertEquals(user.getId(), result.getId());
+        // verify
+        verify(userAssertionHelper, times(1)).assertUserIdNotNull(1L);
+        verify(userRepository, times(1)).findById(1L);
     }
+
 
     @Test
     public void testGetUserById_UserNotFound() {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundApiException.class, () -> userService.getUserById(1L));
+        assertThrows(UserNotFoundForIdException.class, () -> userService.getUserById(1L));
+
+        verify(userAssertionHelper, times(1)).assertUserIdNotNull(1L);
         verify(userRepository, times(1)).findById(1L);
+    }
+
+    private void noMoreInteractions() {
+        verifyNoMoreInteractions(userRepository, userAssertionHelper);
     }
 }

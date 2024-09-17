@@ -6,6 +6,7 @@ import com.example.user_management.api.model.response.GetUserResponseModel;
 import com.example.user_management.entity.User;
 import com.example.user_management.service.user.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
@@ -34,6 +35,7 @@ public class UserController {
         return new ResponseEntity<>(new GetUserResponseModel(userResponseModel), HttpStatus.OK);
     }
 
+    @Cacheable(value = "userCache", key = "'users_' + #page + '_' + #size + '_' + #sortBy + '_' + #sortDirection", cacheManager = "redisCacheManager")
     @GetMapping
     public ResponseEntity<Page<UserResponseModel>> getAllUsers(@RequestParam(defaultValue = "0") int page,
                                                                @RequestParam(defaultValue = "10") int size,

@@ -1,0 +1,45 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: user_management
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - my_dbdata:/var/lib/mysql
+    networks:
+      - app-net
+
+#  app:
+#    image: user-management
+#    container_name: app
+#    depends_on:
+#      - db
+#      - redis
+#    ports:
+#      - "8080:8080"
+##    environment:
+##      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/user_management
+##      - SPRING_DATASOURCE_USERNAME=myuser
+##      - SPRING_DATASOURCE_PASSWORD=mypassword
+#    networks:
+#      - app-net
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - app-net
+
+volumes:
+  my_dbdata:
+
+networks:
+  app-net:
+    external: true
