@@ -1,0 +1,33 @@
+<configuration>
+
+    <!-- File appender for logging activities -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Log file location -->
+        <file>${user.home}/activity-tracking/logs/activity.log</file>
+
+        <!-- Encoder to specify log format -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+
+        <!-- Rolling policy for file rotation based on size -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Log file naming pattern (with timestamp) -->
+            <fileNamePattern>${user.home}/activity-tracking/logs/activity.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+
+            <!-- Max size of each log file -->
+            <maxFileSize>1MB</maxFileSize>
+
+            <!-- Keep a maximum of 5 log files -->
+            <maxHistory>5</maxHistory>
+
+            <!-- Total size cap for log files -->
+            <totalSizeCap>5MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Set the root logger to use the FILE appender -->
+    <root level="INFO">
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>
