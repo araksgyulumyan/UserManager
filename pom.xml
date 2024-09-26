@@ -27,6 +27,7 @@
         <junit.jupiter.version>5.10.2</junit.jupiter.version>
         <mockito.version>5.12.0</mockito.version>
         <jjwt.version>0.11.5</jjwt.version>
+        <producer.version>0.0.1-SNAPSHOT</producer.version>
     </properties>
 
     <dependencyManagement>
@@ -55,6 +56,11 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt-jackson</artifactId>
                 <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.example</groupId>
+                <artifactId>producer</artifactId>
+                <version>${producer.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -1,5 +1,6 @@
 package com.example.user_manager;
 
+import com.example.TestProducer;
 import com.example.user_manager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
