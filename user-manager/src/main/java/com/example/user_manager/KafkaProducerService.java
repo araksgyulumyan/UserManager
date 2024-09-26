@@ -1,6 +1,7 @@
 package com.example.user_manager;
 
 import com.example.TestProducer;
+import com.example.model.MessageTestModel;
 import com.example.user_manager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,7 @@ public class KafkaProducerService implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        MessageTestModel messageTestModel = new MessageTestModel();
         userRepository.findAll().forEach(each -> {
             sendMessage(String.valueOf(each.getId()), each);
             try {
